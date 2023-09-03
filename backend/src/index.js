@@ -14,14 +14,6 @@ app.get("/", (req, res) => {
   return res.status(200).json(email);
 })
 
-app.get("/api/getEmails", (req, res) => {
-  const email = {
-    name: "Tsubasa",
-    email: "example@gmail.com",
-  };
-
-  return res.status(200).json(email);
-});
 
 app.listen(5000, () => {
   console.log("App listening on port 5000");

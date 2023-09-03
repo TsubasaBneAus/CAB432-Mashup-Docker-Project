@@ -7,7 +7,7 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/getEmails");
+        const res = await fetch("http://localhost:5000/");
         const json = await res.json();
         setData(json);
       } catch (err) {
