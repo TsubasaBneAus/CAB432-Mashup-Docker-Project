@@ -1,0 +1,51 @@
+services:
+  frontend:
+    image: nextjs-prod
+    container_name: nextjs-prod
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    ports:
+      - 3000:3000
+    env_file:
+      - .env
+    tty: true
+    depends_on:
+      - backend
+    networks:
+      - shared-network
+  
+  backend:
+    image: nodejs-prod
+    container_name: nodejs-prod
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    ports:
+      - 5000:5000
+    env_file:
+      - .env
+    tty: true
+    depends_on:
+      - db
+    networks:
+      - shared-network
+      
+  db:
+    image: mysql:8.0
+    container_name: mysql-prod
+    ports:
+      - 3300:3306
+    env_file:
+      - .env
+    volumes:
+      - db-volume:/var/lib/mysql
+    networks:
+      - shared-network
+
+volumes:
+  db-volume:
+
+networks:
+  shared-network:
+    external: true
