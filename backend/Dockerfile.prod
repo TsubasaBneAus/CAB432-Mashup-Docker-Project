@@ -11,5 +11,8 @@ RUN npm ci --omit=dev
 # Copy the rest of the application files
 COPY . .
 
+# Generate the Prisma Client
+RUN npx prisma generate
+
 # Start a production server
-CMD [ "node", "server.js" ]
+CMD [ "node", "index.js" ]

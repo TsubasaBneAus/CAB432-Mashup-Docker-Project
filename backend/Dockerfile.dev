@@ -11,5 +11,8 @@ RUN npm install
 # Copy the rest of the application files
 COPY . .
 
+# Generate the Prisma Client
+RUN npx prisma generate
+
 # Start a development server
 CMD [ "npm", "start" ]

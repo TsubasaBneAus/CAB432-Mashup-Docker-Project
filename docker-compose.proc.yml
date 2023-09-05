@@ -1,7 +1,7 @@
 services:
   frontend:
-    image: nextjs-prod
-    container_name: nextjs-prod
+    image: cab432-mashup-docker-project-frontend-prod
+    container_name: cab432-mashup-docker-project-frontend-prod
     build:
       context: ./frontend
       dockerfile: Dockerfile.prod
@@ -16,8 +16,8 @@ services:
       - shared-network
   
   backend:
-    image: nodejs-prod
-    container_name: nodejs-prod
+    image: cab432-mashup-docker-project-frontend-prod
+    container_name: cab432-mashup-docker-project-frontend-prod
     build:
       context: ./backend
       dockerfile: Dockerfile.prod
@@ -33,7 +33,7 @@ services:
       
   db:
     image: mysql:8.0
-    container_name: mysql-prod
+    container_name: cab432-mashup-docker-project-db-prod
     ports:
       - 3300:3306
     env_file:

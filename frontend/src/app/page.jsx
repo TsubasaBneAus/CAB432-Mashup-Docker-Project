@@ -25,7 +25,7 @@ const Home = () => {
         }),
       });
       const data = await res.json();
-      console.log(data);
+      // console.log(data.name);
       setCurrentData(data);
     } catch (err) {
       console.log(err);
@@ -66,7 +66,7 @@ const Home = () => {
   };
 
   useEffect(() => {
-    // fetchLocation();
+    fetchLocation();
     setdate();
   }, []);
 
@@ -74,7 +74,8 @@ const Home = () => {
     <div>
       {/* <h1 className="text-2xl">Fetched Info: {data.name} {data.country}</h1> */}
       <h1 className="text-2xl">
-        {/* The current location: ({location.latitude}, {location.longitude}) */}
+        The current location: ({location.latitude}, {location.longitude})
+        {currentData.name}
         {date}
       </h1>
     </div>

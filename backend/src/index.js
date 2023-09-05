@@ -51,8 +51,8 @@ app.post("/getCurrentData", async (req, res) => {
       break;
     }
   }
-  // console.log(json);
-  // return res.send(JSON.stringify(json.city));
+  console.log(weatherForecastData.city);
+  return res.send(JSON.stringify(weatherForecastData.city));
 });
 
 app.listen(PORT, () => {
