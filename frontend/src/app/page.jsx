@@ -3,13 +3,11 @@
 import { useState, useEffect } from "react";
 
 const Home = () => {
-  const [currentData, setCurrentData] = useState({});
+  const [currentData, setCurrentData] = useState([]);
   const [location, setLocation] = useState({
     latitude: "",
     longitude: "",
   });
-
-  const [date, setDate] = useState();
 
   // Fetch the current data on weather and news
   const fetchCurrentData = async (latitude, longitude) => {
@@ -25,7 +23,7 @@ const Home = () => {
         }),
       });
       const data = await res.json();
-      // console.log(data.name);
+      console.log(data);
       setCurrentData(data);
     } catch (err) {
       console.log(err);
@@ -45,41 +43,64 @@ const Home = () => {
     });
   };
 
-  const setdate = () => {
-    const dateObject = new Date();
-    const year = dateObject.getFullYear();
-    const month = ("0" + (dateObject.getMonth() + 1)).slice(-2);
-    const date = ("0" + dateObject.getDate()).slice(-2);
-    const hours = ("0" + dateObject.getHours()).slice(-2);
-    const minutes = ("0" + dateObject.getMinutes()).slice(-2);
-    const seconds = ("0" + dateObject.getSeconds()).slice(-2);
-    const currentDate = `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
-    console.log(currentDate);
-    console.log(new Date());
-    const date1 = new Date().getTime();
-    const date2 = new Date("2023-09-04 19:00:00").getTime();
-    if (date1 < date2) {
-      setDate("TRUE");
-    } else {
-      setDate("FALSE");
-    }
-  };
-
   useEffect(() => {
     fetchLocation();
-    setdate();
   }, []);
 
-  return (
-    <div>
-      {/* <h1 className="text-2xl">Fetched Info: {data.name} {data.country}</h1> */}
+  // Check if "currentDate" is empty
+  if (currentData.length == 0) {
+    return (
       <h1 className="text-2xl">
         The current location: ({location.latitude}, {location.longitude})
-        {currentData.name}
-        {date}
       </h1>
-    </div>
-  );
+    );
+  } else {
+    return (
+      <div className="bg-slate-900 h-screen">
+        <h1 className="text-2xl mx-auto">
+          The current location: ({location.latitude}, {location.longitude})
+        </h1>
+        <div className="bg-zinc-300 rounded-lg w-11/12 flex justify-center mx-auto">
+          <img
+            src={`https://openweathermap.org/img/wn/${currentData[0].icon}@2x.png`}
+            alt="alternatetext"
+          />
+          <img
+            src={`https://openweathermap.org/img/wn/${currentData[1].icon}@2x.png`}
+            alt="alternatetext"
+          />
+          <img
+            src={`https://openweathermap.org/img/wn/${currentData[2].icon}@2x.png`}
+            alt="alternatetext"
+          />
+          <img
+            src={`https://openweathermap.org/img/wn/${currentData[3].icon}@2x.png`}
+            alt="alternatetext"
+          />
+          <img
+            src={`https://openweathermap.org/img/wn/${currentData[4].icon}@2x.png`}
+            alt="alternatetext"
+          />
+          <img
+            src={`https://openweathermap.org/img/wn/${currentData[5].icon}@2x.png`}
+            alt="alternatetext"
+          />
+          <img
+            src={`https://openweathermap.org/img/wn/${currentData[6].icon}@2x.png`}
+            alt="alternatetext"
+          />
+          <img
+            src={`https://openweathermap.org/img/wn/${currentData[7].icon}@2x.png`}
+            alt="alternatetext"
+          />
+          <img
+            src={`https://openweathermap.org/img/wn/${currentData[8].icon}@2x.png`}
+            alt="alternatetext"
+          />
+        </div>
+      </div>
+    );
+  }
 };
 
 export default Home;
