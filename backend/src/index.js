@@ -40,7 +40,7 @@ app.post("/getCurrentData", async (req, res) => {
     weather: currentWeatherData.weather[0].main,
     icon: currentWeatherData.weather[0].icon,
     temp: currentWeatherData.main.temp,
-    date: currentDate.toLocaleString("en-AU"),
+    date: currentDate,
   });
 
   // Process the forecast data to display 24 hours of data from the time fetched
@@ -53,12 +53,12 @@ app.post("/getCurrentData", async (req, res) => {
         weather: eachForecast.weather[0].main,
         icon: eachForecast.weather[0].icon,
         temp: eachForecast.main.temp,
-        date: forecastDate.toLocaleString("en-AU"),
+        date: forecastDate,
       });
     }
 
-    // Break if the array has more than 9 weather data
-    if (weatherArray.length >= 9) {
+    // Break if the array has more than 8 weather data
+    if (weatherArray.length >= 8) {
       break;
     }
   }
@@ -69,10 +69,15 @@ app.post("/getCurrentData", async (req, res) => {
   // );
   // const topHeadlinesData = topHeadlines.json();
 
-  // console.log(currentWeatherData);
-  // console.log(weatherForecastData);
-  // console.log(weatherArray);
-  return res.send(JSON.stringify(weatherArray));
+  // console.log(JSON.stringify({
+  //   city: currentWeatherData.name,
+  //   country: currentWeatherData.sys.country,
+  //   weather: weatherArray,
+  // }));
+  return res.send(JSON.stringify({
+    city: currentWeatherData.name,
+    weather: weatherArray,
+  }));
   // return res.send(
   //   JSON.stringify({
   //     weather: weatherArray,

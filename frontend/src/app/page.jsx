@@ -3,7 +3,10 @@
 import { useState, useEffect } from "react";
 
 const Home = () => {
-  const [currentData, setCurrentData] = useState([]);
+  const [currentData, setCurrentData] = useState({
+    city: "",
+    weather: [],
+  });
   const [location, setLocation] = useState({
     latitude: "",
     longitude: "",
@@ -23,7 +26,6 @@ const Home = () => {
         }),
       });
       const data = await res.json();
-      console.log(data);
       setCurrentData(data);
     } catch (err) {
       console.log(err);
@@ -43,64 +45,82 @@ const Home = () => {
     });
   };
 
+  // Extract hours data from the Date object
+  const extractHours = (weatherDate) => {
+    const date = new Date(weatherDate);
+    const extractedHours = date.toLocaleTimeString([], {
+      hour: "2-digit",
+    });
+    return extractedHours;
+  };
+
+  // Display the information of the current weather and forecast
+  const displayWeather = () => {
+    // Check if "currentData" is empty
+    if (!currentData) {
+      return null;
+    } else {
+      let weatherArray = [];
+      const weather = currentData.weather;
+      for (let i = 0; i < weather.length; i++) {
+        if (i == 0) {
+          weatherArray.push(
+            <div className="flex flex-col justify-center">
+              <p className="text-2xl font-semibold text-white text-center">
+                Now
+              </p>
+              <img
+                src={`https://openweathermap.org/img/wn/${weather[i].icon}@2x.png`}
+                alt="weatherIcon"
+              />
+              <p className="text-2xl font-semibold text-white text-center">
+                {Math.round(weather[i].temp)} &#8451;
+              </p>
+            </div>
+          );
+        } else {
+          weatherArray.push(
+            <div className="flex flex-col justify-center">
+              <p className="text-2xl font-semibold text-white text-center">
+                {extractHours(weather[i].date)}
+              </p>
+              <img
+                src={`https://openweathermap.org/img/wn/${weather[i].icon}@2x.png`}
+                alt="weatherIcon"
+              />
+              <p className="text-2xl font-semibold text-white text-center">
+                {Math.round(weather[i].temp)} &#8451;
+              </p>
+            </div>
+          );
+        }
+      }
+
+      return (
+        <div className="bg-sky-600 rounded-lg shadow-xl w-full max-w-4xl flex flex-col justify-center mx-auto py-1">
+          <h1 className="text-3xl font-semibold text-white text-center">
+            Weather in {currentData.city}
+          </h1>
+          <div className="flex justify-center">{weatherArray}</div>
+        </div>
+      );
+    }
+  };
+
   useEffect(() => {
     fetchLocation();
   }, []);
 
-  // Check if "currentDate" is empty
-  if (currentData.length == 0) {
-    return (
-      <h1 className="text-2xl">
-        The current location: ({location.latitude}, {location.longitude})
-      </h1>
-    );
-  } else {
-    return (
-      <div className="bg-slate-900 h-screen">
-        <h1 className="text-2xl mx-auto">
-          The current location: ({location.latitude}, {location.longitude})
+  return (
+    <div className="bg-emerald-100 h-screen">
+      <div className="bg-indigo-800 shadow-xl py-2 mb-5">
+        <h1 className="text-4xl font-semibold text-white text-center">
+          Today's Dashboard
         </h1>
-        <div className="bg-zinc-300 rounded-lg w-11/12 flex justify-center mx-auto">
-          <img
-            src={`https://openweathermap.org/img/wn/${currentData[0].icon}@2x.png`}
-            alt="alternatetext"
-          />
-          <img
-            src={`https://openweathermap.org/img/wn/${currentData[1].icon}@2x.png`}
-            alt="alternatetext"
-          />
-          <img
-            src={`https://openweathermap.org/img/wn/${currentData[2].icon}@2x.png`}
-            alt="alternatetext"
-          />
-          <img
-            src={`https://openweathermap.org/img/wn/${currentData[3].icon}@2x.png`}
-            alt="alternatetext"
-          />
-          <img
-            src={`https://openweathermap.org/img/wn/${currentData[4].icon}@2x.png`}
-            alt="alternatetext"
-          />
-          <img
-            src={`https://openweathermap.org/img/wn/${currentData[5].icon}@2x.png`}
-            alt="alternatetext"
-          />
-          <img
-            src={`https://openweathermap.org/img/wn/${currentData[6].icon}@2x.png`}
-            alt="alternatetext"
-          />
-          <img
-            src={`https://openweathermap.org/img/wn/${currentData[7].icon}@2x.png`}
-            alt="alternatetext"
-          />
-          <img
-            src={`https://openweathermap.org/img/wn/${currentData[8].icon}@2x.png`}
-            alt="alternatetext"
-          />
-        </div>
       </div>
-    );
-  }
+      {displayWeather()}
+    </div>
+  );
 };
 
 export default Home;

@@ -16,8 +16,8 @@ services:
       - shared-network
   
   backend:
-    image: cab432-mashup-docker-project-frontend-prod
-    container_name: cab432-mashup-docker-project-frontend-prod
+    image: cab432-mashup-docker-project-backend-prod
+    container_name: cab432-mashup-docker-project-backend-prod
     build:
       context: ./backend
       dockerfile: Dockerfile.prod
