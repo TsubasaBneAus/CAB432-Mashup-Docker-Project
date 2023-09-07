@@ -1,47 +1,35 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import Footer from "@/components/footer";
+import Header from "@/components/header";
+import CircularProgress from "@mui/material/CircularProgress";
+import { useEffect, useState } from "react";
 
 const Home = () => {
   const [currentData, setCurrentData] = useState({
-    city: "",
+    city: null,
     weather: [],
   });
-  const [location, setLocation] = useState({
-    latitude: "",
-    longitude: "",
-  });
 
-  // Fetch the current data on weather and news
-  const fetchCurrentData = async (latitude, longitude) => {
-    try {
-      const res = await fetch("http://localhost:5000/getCurrentData", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          latitude: latitude,
-          longitude: longitude,
-        }),
-      });
-      const data = await res.json();
-      setCurrentData(data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  // Fetch user's current location data
-  const fetchLocation = () => {
-    navigator.geolocation.getCurrentPosition((position) => {
-      const latitude = position.coords.latitude;
-      const longitude = position.coords.longitude;
-      setLocation({
-        latitude: latitude,
-        longitude: longitude,
-      });
-      fetchCurrentData(latitude, longitude);
+  // Fetch the current data on weather and news based on the user's location
+  const fetchDataWithCoords = () => {
+    navigator.geolocation.getCurrentPosition(async (position) => {
+      try {
+        const res = await fetch("http://localhost:5000/getCurrentData", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          }),
+        });
+        const data = await res.json();
+        setCurrentData(data);
+      } catch (err) {
+        console.log(err);
+      }
     });
   };
 
@@ -56,71 +44,79 @@ const Home = () => {
 
   // Display the information of the current weather and forecast
   const displayWeather = () => {
-    // Check if "currentData" is empty
-    if (!currentData) {
-      return null;
-    } else {
-      let weatherArray = [];
-      const weather = currentData.weather;
-      for (let i = 0; i < weather.length; i++) {
-        if (i == 0) {
-          weatherArray.push(
-            <div className="flex flex-col justify-center">
-              <p className="text-2xl font-semibold text-white text-center">
-                Now
-              </p>
-              <img
-                src={`https://openweathermap.org/img/wn/${weather[i].icon}@2x.png`}
-                alt="weatherIcon"
-              />
-              <p className="text-2xl font-semibold text-white text-center">
-                {Math.round(weather[i].temp)} &#8451;
-              </p>
-            </div>
-          );
-        } else {
-          weatherArray.push(
-            <div className="flex flex-col justify-center">
-              <p className="text-2xl font-semibold text-white text-center">
-                {extractHours(weather[i].date)}
-              </p>
-              <img
-                src={`https://openweathermap.org/img/wn/${weather[i].icon}@2x.png`}
-                alt="weatherIcon"
-              />
-              <p className="text-2xl font-semibold text-white text-center">
-                {Math.round(weather[i].temp)} &#8451;
-              </p>
-            </div>
-          );
-        }
+    let weatherArray = [];
+    const weather = currentData.weather;
+    for (let i = 0; i < weather.length; i++) {
+      if (i == 0) {
+        weatherArray.push(
+          <div className="flex flex-col justify-center">
+            <p className="text-center text-2xl font-semibold text-white">Now</p>
+            <img
+              src={`https://openweathermap.org/img/wn/${weather[i].icon}@2x.png`}
+              alt="weatherIcon"
+            />
+            <p className="text-center text-2xl font-semibold text-white">
+              {Math.round(weather[i].temp)} &#8451;
+            </p>
+          </div>,
+        );
+      } else {
+        weatherArray.push(
+          <div className="flex flex-col justify-center">
+            <p className="text-center text-2xl font-semibold text-white">
+              {extractHours(weather[i].date)}
+            </p>
+            <img
+              src={`https://openweathermap.org/img/wn/${weather[i].icon}@2x.png`}
+              alt="weatherIcon"
+            />
+            <p className="text-center text-2xl font-semibold text-white">
+              {Math.round(weather[i].temp)} &#8451;
+            </p>
+          </div>,
+        );
       }
-
-      return (
-        <div className="bg-sky-600 rounded-lg shadow-xl w-full max-w-4xl flex flex-col justify-center mx-auto py-1">
-          <h1 className="text-3xl font-semibold text-white text-center">
-            Weather in {currentData.city}
-          </h1>
-          <div className="flex justify-center">{weatherArray}</div>
-        </div>
-      );
     }
+
+    return (
+      <div className="mx-auto flex w-full max-w-4xl flex-col justify-center rounded-lg bg-sky-600 py-1 shadow-xl">
+        <h1 className="text-center text-3xl font-semibold text-white">
+          Weather in {currentData.city}
+        </h1>
+        <div className="flex justify-center">{weatherArray}</div>
+      </div>
+    );
   };
 
   useEffect(() => {
-    fetchLocation();
+    fetchDataWithCoords();
   }, []);
 
-  return (
-    <div className="bg-emerald-100 h-screen">
-      <div className="bg-indigo-800 shadow-xl py-2 mb-5">
-        <h1 className="text-4xl font-semibold text-white text-center">
-          Today's Dashboard
-        </h1>
+  // Check if the app is loading
+  if (currentData.city == null) {
+    return (
+      <div>
+        <div className="fixed z-10 flex h-screen w-screen items-center justify-center text-white">
+          <CircularProgress color="inherit" size={100} />
+        </div>
+        <div className="blur-sm brightness-50 backdrop-blur-sm">
+          <div className="flex h-screen flex-col bg-emerald-100">
+            <Header />
+            <main className="grow" />
+            <Footer />
+          </div>
+        </div>
       </div>
-      {displayWeather()}
-    </div>
-  );
+    );
+  } else {
+    return (
+      <div className="flex h-screen flex-col bg-emerald-100">
+        <Header />
+        <main className="grow">{displayWeather()}</main>
+        <Footer />
+      </div>
+    );
+  }
 };
 
 export default Home;
