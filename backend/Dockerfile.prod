@@ -15,4 +15,4 @@ COPY . .
 RUN npx prisma generate
 
 # Start a production server
-CMD [ "node", "index.js" ]
+CMD [ "node", "src/index.js" ]

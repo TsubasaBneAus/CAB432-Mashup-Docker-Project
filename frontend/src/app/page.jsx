@@ -1,8 +1,10 @@
 "use client";
-
-import Footer from "@/components/footer";
-import Header from "@/components/header";
 import CircularProgress from "@mui/material/CircularProgress";
+import Modal from "@mui/material/Modal";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Footer from "../components/footer";
+import Header from "../components/header";
 import { useEffect, useState } from "react";
 
 const Home = () => {
@@ -10,12 +12,14 @@ const Home = () => {
     city: null,
     weather: [],
   });
+  const [cityName, setCityName] = useState("");
+  const [modalState, setModalState] = useState(false);
 
   // Fetch the current data on weather and news based on the user's location
   const fetchDataWithCoords = () => {
     navigator.geolocation.getCurrentPosition(async (position) => {
       try {
-        const res = await fetch("http://localhost:5000/getCurrentData", {
+        const res = await fetch("http://localhost:5000/getDataWithCoords", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -26,11 +30,32 @@ const Home = () => {
           }),
         });
         const data = await res.json();
+        console.log(data);
         setCurrentData(data);
       } catch (err) {
         console.log(err);
       }
     });
+  };
+
+  // Fetch the current data on weather and news based on the city a user entered
+  const fetchDataWithCityName = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/getDataWithCityName", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          cityName: cityName,
+        }),
+      });
+      const data = await res.json();
+      console.log(data);
+      setCurrentData(data);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   // Extract hours data from the Date object
@@ -49,7 +74,7 @@ const Home = () => {
     for (let i = 0; i < weather.length; i++) {
       if (i == 0) {
         weatherArray.push(
-          <div className="flex flex-col justify-center">
+          <div key={i} className="flex flex-col justify-center">
             <p className="text-center text-2xl font-semibold text-white">Now</p>
             <img
               src={`https://openweathermap.org/img/wn/${weather[i].icon}@2x.png`}
@@ -62,7 +87,7 @@ const Home = () => {
         );
       } else {
         weatherArray.push(
-          <div className="flex flex-col justify-center">
+          <div key={i} className="flex flex-col justify-center">
             <p className="text-center text-2xl font-semibold text-white">
               {extractHours(weather[i].date)}
             </p>
@@ -88,9 +113,20 @@ const Home = () => {
     );
   };
 
+  // Handle the submission event of the modal
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setModalState(false);
+    fetchDataWithCityName();
+  };
+
   useEffect(() => {
     fetchDataWithCoords();
   }, []);
+
+  useEffect(() => {
+    console.log(cityName);
+  }, [cityName]);
 
   // Check if the app is loading
   if (currentData.city == null) {
@@ -101,7 +137,7 @@ const Home = () => {
         </div>
         <div className="blur-sm brightness-50 backdrop-blur-sm">
           <div className="flex h-screen flex-col bg-emerald-100">
-            <Header />
+            <Header setModalState={setModalState} fetchDataWithCoords={fetchDataWithCoords} />
             <main className="grow" />
             <Footer />
           </div>
@@ -111,8 +147,41 @@ const Home = () => {
   } else {
     return (
       <div className="flex h-screen flex-col bg-emerald-100">
-        <Header />
-        <main className="grow">{displayWeather()}</main>
+        <Header setModalState={setModalState} fetchDataWithCoords={fetchDataWithCoords} />
+        <main className="flex grow flex-col">
+          <Modal
+            open={modalState}
+            onClose={() => setModalState(false)}
+            className="m-auto flex h-1/3 justify-center"
+          >
+            <div className="flex h-full w-2/3 flex-col justify-between rounded-lg bg-white">
+              <p className="mt-5 text-center text-3xl font-bold text-black">
+                Search Weather & News
+              </p>
+              <p className="my-5 text-center text-2xl font-semibold text-black">
+                Please enter the name of the city you want to search:
+              </p>
+              <form className="flex flex-col justify-center" onSubmit={handleSubmit}>
+                <TextField
+                  id="cityName"
+                  label="City Name"
+                  variant="outlined"
+                  className="mx-auto mb-5 w-2/3"
+                  onChange={(e) => setCityName(e.target.value)}
+                  required
+                />
+                <Button
+                  variant="contained"
+                  className="mx-auto mb-5 w-2/3 bg-sky-500 text-base normal-case"
+                  type="submit"
+                >
+                  Submit
+                </Button>
+              </form>
+            </div>
+          </Modal>
+          {displayWeather()}
+        </main>
         <Footer />
       </div>
     );
