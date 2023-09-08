@@ -5,6 +5,7 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Footer from "../components/footer";
 import Header from "../components/header";
+import CardComponent from "../components/card";
 import { useEffect, useState } from "react";
 
 const Home = () => {
@@ -17,6 +18,13 @@ const Home = () => {
 
   // Fetch the current data on weather and news based on the user's location
   const fetchDataWithCoords = () => {
+    // Set null to "city" to implement a loading page at first
+    setCurrentData({
+      city: null,
+      weather: [],
+    });
+
+    // Send a POST request to the API server
     navigator.geolocation.getCurrentPosition(async (position) => {
       try {
         const res = await fetch("http://localhost:5000/getDataWithCoords", {
@@ -40,6 +48,13 @@ const Home = () => {
 
   // Fetch the current data on weather and news based on the city a user entered
   const fetchDataWithCityName = async () => {
+    // Set null to "city" to implement a loading page at first
+    setCurrentData({
+      city: null,
+      weather: [],
+    });
+
+    // Send a POST request to the API server
     try {
       const res = await fetch("http://localhost:5000/getDataWithCityName", {
         method: "POST",
@@ -56,6 +71,13 @@ const Home = () => {
     } catch (err) {
       console.log(err);
     }
+  };
+
+  // Handle the submission event of the button in the modal
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setModalState(false);
+    fetchDataWithCityName();
   };
 
   // Extract hours data from the Date object
@@ -104,8 +126,8 @@ const Home = () => {
     }
 
     return (
-      <div className="mx-auto flex w-full max-w-4xl flex-col justify-center rounded-lg bg-sky-600 py-1 shadow-xl">
-        <h1 className="text-center text-3xl font-semibold text-white">
+      <div className="mx-auto flex w-full max-w-4xl flex-col justify-center rounded-lg bg-sky-600 py-3 shadow-xl">
+        <h1 className="text-center text-3xl font-semibold text-white mb-5">
           Weather in {currentData.city}
         </h1>
         <div className="flex justify-center">{weatherArray}</div>
@@ -113,20 +135,23 @@ const Home = () => {
     );
   };
 
-  // Handle the submission event of the modal
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setModalState(false);
-    fetchDataWithCityName();
+  const displayCards = () => {
+    return (
+      <div className="mx-auto mt-5 flex w-full max-w-4xl flex-col justify-center rounded-lg bg-gray-700 py-3">
+        <h1 className="text-center text-3xl font-semibold text-white mb-5">
+          Top Headlines in {currentData.city}
+        </h1>
+        <div className="flex justify-center mb-2">
+          <CardComponent />
+          <CardComponent />
+        </div>
+      </div>
+    );
   };
 
   useEffect(() => {
     fetchDataWithCoords();
   }, []);
-
-  useEffect(() => {
-    console.log(cityName);
-  }, [cityName]);
 
   // Check if the app is loading
   if (currentData.city == null) {
@@ -137,7 +162,10 @@ const Home = () => {
         </div>
         <div className="blur-sm brightness-50 backdrop-blur-sm">
           <div className="flex h-screen flex-col bg-emerald-100">
-            <Header setModalState={setModalState} fetchDataWithCoords={fetchDataWithCoords} />
+            <Header
+              setModalState={setModalState}
+              fetchDataWithCoords={fetchDataWithCoords}
+            />
             <main className="grow" />
             <Footer />
           </div>
@@ -147,7 +175,10 @@ const Home = () => {
   } else {
     return (
       <div className="flex h-screen flex-col bg-emerald-100">
-        <Header setModalState={setModalState} fetchDataWithCoords={fetchDataWithCoords} />
+        <Header
+          setModalState={setModalState}
+          fetchDataWithCoords={fetchDataWithCoords}
+        />
         <main className="flex grow flex-col">
           <Modal
             open={modalState}
@@ -161,7 +192,10 @@ const Home = () => {
               <p className="my-5 text-center text-2xl font-semibold text-black">
                 Please enter the name of the city you want to search:
               </p>
-              <form className="flex flex-col justify-center" onSubmit={handleSubmit}>
+              <form
+                className="flex flex-col justify-center"
+                onSubmit={handleSubmit}
+              >
                 <TextField
                   id="cityName"
                   label="City Name"
@@ -181,6 +215,7 @@ const Home = () => {
             </div>
           </Modal>
           {displayWeather()}
+          {displayCards()}
         </main>
         <Footer />
       </div>
