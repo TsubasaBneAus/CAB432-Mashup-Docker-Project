@@ -1,20 +1,24 @@
 "use client";
 import CircularProgress from "@mui/material/CircularProgress";
-import Modal from "@mui/material/Modal";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import Footer from "../components/footer";
-import Header from "../components/header";
-import CardComponent from "../components/card";
+import Card from "@mui/material/Card";
+import CardActionArea from "@mui/material/CardActionArea";
+import CardContent from "@mui/material/CardContent";
+import Header from "@/components/header";
+import Footer from "@/components/footer";
+import ModalComponent from "@/components/modalComponent";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 const Home = () => {
   const [currentData, setCurrentData] = useState({
     city: null,
     weather: [],
+    topHeadlines: [],
   });
   const [cityName, setCityName] = useState("");
   const [modalState, setModalState] = useState(false);
+  const usedPage = "/";
+  const router = useRouter();
 
   // Fetch the current data on weather and news based on the user's location
   const fetchDataWithCoords = () => {
@@ -38,7 +42,6 @@ const Home = () => {
           }),
         });
         const data = await res.json();
-        console.log(data);
         setCurrentData(data);
       } catch (err) {
         console.log(err);
@@ -66,7 +69,6 @@ const Home = () => {
         }),
       });
       const data = await res.json();
-      console.log(data);
       setCurrentData(data);
     } catch (err) {
       console.log(err);
@@ -126,8 +128,8 @@ const Home = () => {
     }
 
     return (
-      <div className="mx-auto flex w-full max-w-4xl flex-col justify-center rounded-lg bg-sky-600 py-3 shadow-xl">
-        <h1 className="text-center text-3xl font-semibold text-white mb-5">
+      <div className="mx-auto flex w-full max-w-6xl flex-col justify-center rounded-lg bg-sky-600 py-3 shadow-xl">
+        <h1 className="mb-5 text-center text-3xl font-semibold text-white">
           Weather in {currentData.city}
         </h1>
         <div className="flex justify-center">{weatherArray}</div>
@@ -135,15 +137,42 @@ const Home = () => {
     );
   };
 
+  // Display cards of the top headlines
   const displayCards = () => {
+    let articlesArray = [];
+    const articles = currentData.topHeadlines;
+    for (let i = 0; i < articles.length; i++) {
+      articlesArray.push(
+        <div key={i} className="flex justify-center">
+          <Card
+            sx={{ maxWidth: 345 }}
+            className="border-2 border-gray-600 bg-stone-800 text-lg font-semibold text-white shadow-lg"
+          >
+            <CardActionArea
+              onClick={() => {
+                localStorage.setItem(
+                  `news_id_${i}`,
+                  JSON.stringify(articles[i]),
+                );
+                router.push(`/news/${i}`);
+              }}
+            >
+              <CardContent>
+                <p>{articles[i].title}</p>
+              </CardContent>
+            </CardActionArea>
+          </Card>
+        </div>,
+      );
+    }
+
     return (
-      <div className="mx-auto mt-5 flex w-full max-w-4xl flex-col justify-center rounded-lg bg-gray-700 py-3">
-        <h1 className="text-center text-3xl font-semibold text-white mb-5">
+      <div className="mx-auto my-3 flex h-4/5 max-h-[575px] w-full max-w-6xl flex-col justify-center rounded-lg bg-stone-800 pl-3 pr-1">
+        <h1 className="my-5 text-center text-3xl font-semibold text-white">
           Top Headlines in {currentData.city}
         </h1>
-        <div className="flex justify-center mb-2">
-          <CardComponent />
-          <CardComponent />
+        <div className="mb-5 grid grid-cols-3 gap-2 overflow-y-scroll">
+          {articlesArray}
         </div>
       </div>
     );
@@ -162,10 +191,7 @@ const Home = () => {
         </div>
         <div className="blur-sm brightness-50 backdrop-blur-sm">
           <div className="flex h-screen flex-col bg-emerald-100">
-            <Header
-              setModalState={setModalState}
-              fetchDataWithCoords={fetchDataWithCoords}
-            />
+            <Header setModalState={setModalState} />
             <main className="grow" />
             <Footer />
           </div>
@@ -175,45 +201,14 @@ const Home = () => {
   } else {
     return (
       <div className="flex h-screen flex-col bg-emerald-100">
-        <Header
-          setModalState={setModalState}
-          fetchDataWithCoords={fetchDataWithCoords}
-        />
+        <Header setModalState={setModalState} usedPage={usedPage} />
         <main className="flex grow flex-col">
-          <Modal
-            open={modalState}
-            onClose={() => setModalState(false)}
-            className="m-auto flex h-1/3 justify-center"
-          >
-            <div className="flex h-full w-2/3 flex-col justify-between rounded-lg bg-white">
-              <p className="mt-5 text-center text-3xl font-bold text-black">
-                Search Weather & News
-              </p>
-              <p className="my-5 text-center text-2xl font-semibold text-black">
-                Please enter the name of the city you want to search:
-              </p>
-              <form
-                className="flex flex-col justify-center"
-                onSubmit={handleSubmit}
-              >
-                <TextField
-                  id="cityName"
-                  label="City Name"
-                  variant="outlined"
-                  className="mx-auto mb-5 w-2/3"
-                  onChange={(e) => setCityName(e.target.value)}
-                  required
-                />
-                <Button
-                  variant="contained"
-                  className="mx-auto mb-5 w-2/3 bg-sky-500 text-base normal-case"
-                  type="submit"
-                >
-                  Submit
-                </Button>
-              </form>
-            </div>
-          </Modal>
+          <ModalComponent
+            modalState={modalState}
+            setModalState={setModalState}
+            handleSubmit={handleSubmit}
+            setCityName={setCityName}
+          />
           {displayWeather()}
           {displayCards()}
         </main>
