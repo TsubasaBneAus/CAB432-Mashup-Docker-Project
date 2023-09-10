@@ -42,6 +42,7 @@ const Home = () => {
           }),
         });
         const data = await res.json();
+        console.log(data);
         setCurrentData(data);
       } catch (err) {
         console.log(err);
@@ -69,6 +70,7 @@ const Home = () => {
         }),
       });
       const data = await res.json();
+      console.log(data);
       setCurrentData(data);
     } catch (err) {
       console.log(err);
@@ -128,7 +130,7 @@ const Home = () => {
     }
 
     return (
-      <div className="mx-auto flex w-full max-w-6xl flex-col justify-center rounded-lg bg-sky-600 py-3 shadow-xl">
+      <div className="mx-auto my-2 flex w-full max-w-6xl flex-col justify-center rounded-lg bg-sky-600 shadow-xl">
         <h1 className="mb-5 text-center text-3xl font-semibold text-white">
           Weather in {currentData.city}
         </h1>
@@ -150,7 +152,7 @@ const Home = () => {
           >
             <CardActionArea
               onClick={() => {
-                localStorage.setItem(
+                sessionStorage.setItem(
                   `news_id_${i}`,
                   JSON.stringify(articles[i]),
                 );
@@ -167,7 +169,7 @@ const Home = () => {
     }
 
     return (
-      <div className="mx-auto my-3 flex h-4/5 max-h-[575px] w-full max-w-6xl flex-col justify-center rounded-lg bg-stone-800 pl-3 pr-1">
+      <div className="mx-auto flex h-full max-h-[400px] w-full max-w-6xl flex-col justify-center rounded-lg bg-stone-800 pl-3 pr-1">
         <h1 className="my-5 text-center text-3xl font-semibold text-white">
           Top Headlines in {currentData.city}
         </h1>
@@ -182,7 +184,7 @@ const Home = () => {
     fetchDataWithCoords();
   }, []);
 
-  // Check if the app is loading
+  // Check if the page is loading
   if (currentData.city == null) {
     return (
       <div>
@@ -191,7 +193,7 @@ const Home = () => {
         </div>
         <div className="blur-sm brightness-50 backdrop-blur-sm">
           <div className="flex h-screen flex-col bg-emerald-100">
-            <Header setModalState={setModalState} />
+            <Header setModalState={setModalState} usedPage={usedPage} />
             <main className="grow" />
             <Footer />
           </div>
@@ -201,7 +203,11 @@ const Home = () => {
   } else {
     return (
       <div className="flex h-screen flex-col bg-emerald-100">
-        <Header setModalState={setModalState} usedPage={usedPage} />
+        <Header
+          setModalState={setModalState}
+          fetchDataWithCoords={fetchDataWithCoords}
+          usedPage={usedPage}
+        />
         <main className="flex grow flex-col">
           <ModalComponent
             modalState={modalState}

@@ -1,7 +1,4 @@
-import { useRouter } from "next/navigation";
-
 const Header = (props) => {
-  const router = useRouter();
   const displayLinks = () => {
     if (props.usedPage == "/") {
       return (
@@ -13,14 +10,16 @@ const Header = (props) => {
         </button>
       );
     } else {
-      return <p className="text-xl text-slate-800">Search Weather & News</p>;
+      return (
+        <h1 className="text-xl invisible">Search Weather & News</h1>
+      );
     }
   };
   return (
-    <header className="mb-3 flex w-auto justify-around bg-slate-800 py-1 text-white shadow-xl">
+    <header className="flex w-auto justify-around bg-slate-800 py-1 text-white shadow-xl">
       <button
         className="text-4xl font-semibold text-white hover:text-slate-400"
-        onClick={() => router.push("/")}
+        onClick={() => window.open("/", "_self")}
       >
         Today's Dashboard
       </button>
