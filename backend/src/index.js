@@ -1,13 +1,15 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import { PrismaClient } from "@prisma/client";
 
 const app = express();
 const PORT = 5000;
 const corsOptions = {
-  origin: "http://localhost:3000",
-  credentials: true,
+  // origin: "http://localhost:3000",
+  // credentials: true,
 };
+const prisma = new PrismaClient();
 
 // Read environmental variables from the .env file
 dotenv.config({
@@ -19,6 +21,36 @@ const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
 
 app.use(express.json());
 app.use(cors(corsOptions));
+
+app.get("/getNumberOfVisits", async (req, res) => {
+  // Fetch the current number of page counts
+  const currentData = await prisma.pageCount.findUnique({
+    where: {
+      id: 1,
+    },
+  });
+
+  // Create data newly if the data does not exit,
+  // otherwise update data
+  let updatedData;
+  if (currentData == null) {
+    updatedData = await prisma.pageCount.create({
+      data: {
+        pageCount: 1,
+      },
+    });
+  } else {
+    updatedData = await prisma.pageCount.update({
+      where: {
+        id: 1,
+      },
+      data: {
+        pageCount: currentData.pageCount + 1,
+      },
+    });
+  }
+  res.send(updatedData);
+});
 
 app.post("/getDataWithCoords", async (req, res) => {
   // Fetch the current weather and forecast
@@ -147,7 +179,7 @@ app.post("/getYouTubeVideos", async (req, res) => {
     `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=50&q=${modifiedText}&key=${YOUTUBE_API_KEY}`
   );
   const youtubeVideosData = await youtubeVideosRes.json();
-
+  console.log(youtubeVideosData);
   res.send(youtubeVideosData.items);
 });
 

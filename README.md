@@ -20,18 +20,18 @@ docker-compose -f docker-compose.prod.yml up --build -d
 
 ### * If you have not created a table of the MySQL database in the container, execute the following steps to implement database migration, otherwise skip these steps
 
-## 2.1 Enter the MySQL container
+## 2.1 Enter the Backend container
 
 ### For the development environment
 
 ```bash
-docker exec -it cab432-mashup-docker-project-db-dev bash
+docker exec -it cab432-mashup-docker-project-backend-dev bash
 ```
 
 ### For the production environment
 
 ```bash
-docker exec -it cab432-mashup-docker-project-db-prod bash
+docker exec -it cab432-mashup-docker-project-backend-prod bash
 ```
 
 ## 2.2 Implement database migration using Prisma (ORM)

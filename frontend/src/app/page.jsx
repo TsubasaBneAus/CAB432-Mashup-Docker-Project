@@ -42,7 +42,6 @@ const Home = () => {
           }),
         });
         const data = await res.json();
-        console.log(data);
         setCurrentData(data);
       } catch (err) {
         console.log(err);
@@ -70,7 +69,6 @@ const Home = () => {
         }),
       });
       const data = await res.json();
-      console.log(data);
       setCurrentData(data);
     } catch (err) {
       console.log(err);
@@ -139,6 +137,19 @@ const Home = () => {
     );
   };
 
+  // Format ISO datetime to display the datetime with AUS format
+  const formatDateTime = (dateTimeToFormat) => {
+    const date = new Date(dateTimeToFormat);
+    const day = ("0" + date.getDate()).slice(-2);
+    const month = ("0" + (date.getMonth() + 1)).slice(-2);
+    const year = date.getFullYear();
+    const hours = ("0" + date.getHours()).slice(-2);
+    const minutes = ("0" + date.getMinutes()).slice(-2);
+    const formattedDateTime = `${day}/${month}/${year} ${hours}:${minutes}`;
+
+    return formattedDateTime;
+  };
+
   // Display cards of the top headlines
   const displayCards = () => {
     let articlesArray = [];
@@ -161,6 +172,8 @@ const Home = () => {
             >
               <CardContent>
                 <p>{articles[i].title}</p>
+                <hr />
+                <p>{formatDateTime(articles[i].publishedAt)}</p>
               </CardContent>
             </CardActionArea>
           </Card>
@@ -169,7 +182,7 @@ const Home = () => {
     }
 
     return (
-      <div className="mx-auto flex h-full max-h-[400px] w-full max-w-6xl flex-col justify-center rounded-lg bg-stone-800 pl-3 pr-1">
+      <div className="mx-auto mb-2 flex h-full max-h-[400px] w-full max-w-6xl flex-col justify-center rounded-lg bg-stone-800 pl-3 pr-1">
         <h1 className="my-5 text-center text-3xl font-semibold text-white">
           Top Headlines in {currentData.city}
         </h1>
@@ -202,13 +215,13 @@ const Home = () => {
     );
   } else {
     return (
-      <div className="flex h-screen flex-col bg-emerald-100">
+      <div className="flex h-screen flex-col">
         <Header
           setModalState={setModalState}
           fetchDataWithCoords={fetchDataWithCoords}
           usedPage={usedPage}
         />
-        <main className="flex grow flex-col">
+        <main className="flex grow flex-col bg-emerald-100">
           <ModalComponent
             modalState={modalState}
             setModalState={setModalState}

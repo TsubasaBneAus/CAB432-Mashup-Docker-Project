@@ -8,14 +8,16 @@ const nextConfig = {
       },
     ];
   },
-  // webpackDevMiddleware: (config) => {
-  //   config.watchOptions = {
-  //     poll: 800,
-  //     aggregateTimeout: 500,
-  //     ignored: ["node_modules"],
-  //   };
-  //   return config;
-  // },
+  
+  // Comment out codes below in the production environment
+  webpackDevMiddleware: (config) => {
+    config.watchOptions = {
+      poll: 800,
+      aggregateTimeout: 500,
+      ignored: ["node_modules"],
+    };
+    return config;
+  },
 };
 
 module.exports = nextConfig;

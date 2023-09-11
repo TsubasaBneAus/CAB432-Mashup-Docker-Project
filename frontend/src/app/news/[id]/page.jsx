@@ -35,6 +35,7 @@ const News = ({ params }) => {
         },
         body: JSON.stringify({
           newsTitle: rawNewsData.title,
+          publishedAfter: rawNewsData.publishedAt,
         }),
       });
       const data = await res.json();
@@ -51,13 +52,14 @@ const News = ({ params }) => {
     window.open(`${newsData.url}`, "_blank");
   };
 
+  // Format ISO datetime to display the datetime with AUS format
   const formatDateTime = (dateTimeToFormat) => {
     const date = new Date(dateTimeToFormat);
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
+    const day = ("0" + date.getDate()).slice(-2);
+    const month = ("0" + (date.getMonth() + 1)).slice(-2);
     const year = date.getFullYear();
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
+    const hours = ("0" + date.getHours()).slice(-2);
+    const minutes = ("0" + date.getMinutes()).slice(-2);
     const formattedDateTime = `${day}/${month}/${year} ${hours}:${minutes}`;
 
     return formattedDateTime;
@@ -122,22 +124,35 @@ const News = ({ params }) => {
       );
     }
 
-    return (
-      <div className="mx-auto flex h-full max-h-[400px] w-full max-w-6xl flex-col justify-center rounded-lg bg-stone-800 pl-3 pr-1">
-        <h1 className="my-5 text-center text-3xl font-semibold text-white">
-          Related YouTube Videos
-        </h1>
-        <div className="mb-5 grid grid-cols-3 gap-2 overflow-y-scroll">
-          {youtubeVideosArray}
+    // Check if at least one YouTube video exists
+    if (youtubeVideos.length > 0) {
+      return (
+        <div className="mx-auto flex h-full max-h-[400px] w-full max-w-6xl flex-col justify-center rounded-lg bg-stone-800 pl-3 pr-1">
+          <h1 className="my-5 text-center text-3xl font-semibold text-white">
+            Related YouTube Videos
+          </h1>
+          <div className="mb-5 grid grid-cols-3 gap-2 overflow-y-scroll">
+            {youtubeVideosArray}
+          </div>
         </div>
-      </div>
-    );
+      );
+    } else {
+      return (
+        <div className="mx-auto flex h-full max-h-[400px] w-full max-w-6xl flex-col justify-center rounded-lg bg-stone-800 pl-3 pr-1">
+          <h1 className="my-5 text-center text-3xl font-semibold text-white">
+            Related YouTube Videos
+          </h1>
+          <div className="mb-5 grid grid-cols-3 gap-2 overflow-y-scroll">
+            <h1>Nothing Matched</h1>
+          </div>
+        </div>
+      );
+    }
   };
 
   useEffect(() => {
     const sessionStorageData = sessionStorage.getItem(`news_id_${params.id}`);
     const data = JSON.parse(sessionStorageData);
-    console.log(data);
     setNewsData(data);
     fetchYouTubeVideos(data);
   }, []);
