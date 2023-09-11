@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* The following Style is for scroll bars */
+/* width */
+::-webkit-scrollbar {
+    width: 8px;
+}
+  
+/* Track */
+::-webkit-scrollbar-track {
+    background: #525252;
+    border-radius: 5px;
+}
+  
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #a7a7a7;
+    border-radius: 5px;
+}
