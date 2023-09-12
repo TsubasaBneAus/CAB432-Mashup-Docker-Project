@@ -159,9 +159,10 @@ const Home = () => {
         <div key={i} className="flex justify-center">
           <Card
             sx={{ maxWidth: 345 }}
-            className="border-2 border-gray-600 bg-stone-800 text-lg font-semibold text-white shadow-lg"
+            className="h-full w-full border-2 border-gray-600 bg-stone-800 shadow-lg"
           >
             <CardActionArea
+              className="h-full w-full"
               onClick={() => {
                 sessionStorage.setItem(
                   `news_id_${i}`,
@@ -170,7 +171,7 @@ const Home = () => {
                 router.push(`/news/${i}`);
               }}
             >
-              <CardContent>
+              <CardContent className="h-full w-full bg-stone-800 text-lg font-semibold text-white">
                 <p>{articles[i].title}</p>
                 <hr />
                 <p>{formatDateTime(articles[i].publishedAt)}</p>
