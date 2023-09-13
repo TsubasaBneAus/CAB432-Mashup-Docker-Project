@@ -23,7 +23,6 @@ app.use(cors(corsOptions));
 
 app.get("/getNumberOfVisits", async (req, res) => {
   try {
-    // throw new Error;
     // Fetch the current number of page counts
     const currentData = await prisma.pageCount.findUnique({
       where: {
