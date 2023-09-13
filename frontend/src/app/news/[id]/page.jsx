@@ -42,6 +42,7 @@ const News = ({ params }) => {
       setYoutubeVideos(data);
     } catch (err) {
       console.log(err);
+      setYoutubeVideos(["error"]);
     }
   };
 
@@ -92,6 +93,17 @@ const News = ({ params }) => {
 
   // Display YouTube videos related to the news
   const displayYouTubeVideos = () => {
+    // Check if the videos are fetched correctly
+    if (youtubeVideos[0] == "error") {
+      return (
+        <div className="mx-auto flex h-full max-h-[400px] w-full max-w-6xl flex-col justify-center rounded-lg bg-stone-800 pl-3 pr-1">
+          <h1 className="my-5 text-center text-3xl font-semibold text-white">
+            Failed to fetch the Related YouTube Videos
+          </h1>
+        </div>
+      );
+    }
+
     let youtubeVideosArray = [];
     for (let i = 0; i < youtubeVideos.length; i++) {
       const title = youtubeVideos[i].snippet.title;
@@ -112,7 +124,7 @@ const News = ({ params }) => {
               }}
             >
               <CardMedia component="img" image={thumbnail} alt="youtubeVideo" />
-              <CardContent className="flex w-full h-36 flex-col justify-center bg-stone-800 text-white">
+              <CardContent className="flex h-36 w-full flex-col justify-center bg-stone-800 text-white">
                 <p>{title}</p>
                 <hr />
                 <p>Published at {formatDateTime(publishedDateTime)}</p>
@@ -141,7 +153,7 @@ const News = ({ params }) => {
           <h1 className="my-5 text-center text-3xl font-semibold text-white">
             Related YouTube Videos
           </h1>
-          <div className="mb-5 grid grid-cols-3 gap-2 overflow-y-scroll">
+          <div className="mb-5 flex justify-center text-center text-xl font-semibold text-white">
             <h1>Nothing Matched</h1>
           </div>
         </div>

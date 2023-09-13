@@ -22,7 +22,7 @@ const ModalComponent = (props) => {
           <input
             type="text"
             name="cityName"
-            placeholder="Enter the name of the city."
+            placeholder="Please enter the name of the city."
             className="mx-auto mb-5 w-full rounded-md border-2 border-black text-xl"
             onChange={(e) => props.setCityName(e.target.value)}
             required
