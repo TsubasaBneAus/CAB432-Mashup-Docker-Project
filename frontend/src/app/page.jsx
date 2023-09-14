@@ -18,6 +18,11 @@ const Home = () => {
   const [cityName, setCityName] = useState("");
   const [modalState, setModalState] = useState(false);
   const usedPage = "/";
+  const errorCurrentData = {
+    city: "failed",
+    weather: [],
+    topHeadlines: [],
+  };
   const router = useRouter();
 
   // Fetch the current data on weather and news based on the user's location
@@ -45,6 +50,7 @@ const Home = () => {
         setCurrentData(data);
       } catch (err) {
         console.log(err);
+        setCurrentData(errorCurrentData);
       }
     });
   };
@@ -72,6 +78,7 @@ const Home = () => {
       setCurrentData(data);
     } catch (err) {
       console.log(err);
+      setCurrentData(errorCurrentData);
     }
   };
 
@@ -93,6 +100,17 @@ const Home = () => {
 
   // Display the information of the current weather and forecast
   const displayWeather = () => {
+    // Check if the data is fetched correctly
+    if (currentData.city == errorCurrentData.city) {
+      return (
+        <div className="mx-auto my-2 flex w-full max-w-6xl flex-col justify-center rounded-lg bg-sky-600 shadow-xl">
+          <h1 className="mb-5 text-center text-3xl font-semibold text-white">
+            Failed to fetch the Weather
+          </h1>
+        </div>
+      );
+    }
+
     let weatherArray = [];
     const weather = currentData.weather;
     for (let i = 0; i < weather.length; i++) {
@@ -152,6 +170,17 @@ const Home = () => {
 
   // Display cards of the top headlines
   const displayCards = () => {
+    // Check if the data is fetched correctly
+    if (currentData.city == errorCurrentData.city) {
+      return (
+        <div className="mx-auto mb-2 flex h-full max-h-[400px] w-full max-w-6xl flex-col justify-center rounded-lg bg-stone-800 pl-3 pr-1">
+          <h1 className="my-5 text-center text-3xl font-semibold text-white">
+            Failed to fetch the Top Headlines
+          </h1>
+        </div>
+      );
+    }
+
     let articlesArray = [];
     const articles = currentData.topHeadlines;
     for (let i = 0; i < articles.length; i++) {
@@ -159,9 +188,10 @@ const Home = () => {
         <div key={i} className="flex justify-center">
           <Card
             sx={{ maxWidth: 345 }}
-            className="border-2 border-gray-600 bg-stone-800 text-lg font-semibold text-white shadow-lg"
+            className="h-full w-full border-2 border-gray-600 bg-stone-800 shadow-lg"
           >
             <CardActionArea
+              className="h-full w-full"
               onClick={() => {
                 sessionStorage.setItem(
                   `news_id_${i}`,
@@ -170,7 +200,7 @@ const Home = () => {
                 router.push(`/news/${i}`);
               }}
             >
-              <CardContent>
+              <CardContent className="h-full w-full bg-stone-800 text-lg font-semibold text-white">
                 <p>{articles[i].title}</p>
                 <hr />
                 <p>{formatDateTime(articles[i].publishedAt)}</p>
@@ -216,11 +246,7 @@ const Home = () => {
   } else {
     return (
       <div className="flex h-screen flex-col">
-        <Header
-          setModalState={setModalState}
-          fetchDataWithCoords={fetchDataWithCoords}
-          usedPage={usedPage}
-        />
+        <Header setModalState={setModalState} usedPage={usedPage} />
         <main className="flex grow flex-col bg-emerald-100">
           <ModalComponent
             modalState={modalState}

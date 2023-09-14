@@ -1,7 +1,6 @@
 "use client";
 import {
   CircularProgress,
-  Button,
   Card,
   CardContent,
   CardMedia,
@@ -43,6 +42,7 @@ const News = ({ params }) => {
       setYoutubeVideos(data);
     } catch (err) {
       console.log(err);
+      setYoutubeVideos(["error"]);
     }
   };
 
@@ -69,7 +69,7 @@ const News = ({ params }) => {
   const displayNews = () => {
     return (
       <form
-        className="mx-auto my-2 flex w-full max-w-6xl flex-col justify-center rounded-lg bg-stone-800 py-3 shadow-xl"
+        className="mx-auto my-2 flex w-full max-w-6xl flex-col justify-center rounded-lg bg-stone-800 px-10 py-3 shadow-xl"
         onSubmit={handleSubmit}
       >
         <h1 className="mb-3 text-center text-3xl font-semibold text-white">
@@ -81,19 +81,29 @@ const News = ({ params }) => {
         <p className="mb-3 text-center text-2xl font-semibold text-white">
           Retrieved From {newsData.source.name}
         </p>
-        <Button
-          variant="contained"
-          className="mx-auto mb-2 w-2/3 bg-sky-500 text-base normal-case"
+        <button
           type="submit"
+          className="mx-28 rounded-md bg-blue-700 text-xl font-semibold text-white hover:bg-blue-900"
         >
-          Go To The Source
-        </Button>
+          Go To the Source
+        </button>
       </form>
     );
   };
 
   // Display YouTube videos related to the news
   const displayYouTubeVideos = () => {
+    // Check if the videos are fetched correctly
+    if (youtubeVideos[0] == "error") {
+      return (
+        <div className="mx-auto flex h-full max-h-[400px] w-full max-w-6xl flex-col justify-center rounded-lg bg-stone-800 pl-3 pr-1">
+          <h1 className="my-5 text-center text-3xl font-semibold text-white">
+            Failed to fetch the Related YouTube Videos
+          </h1>
+        </div>
+      );
+    }
+
     let youtubeVideosArray = [];
     for (let i = 0; i < youtubeVideos.length; i++) {
       const title = youtubeVideos[i].snippet.title;
@@ -105,15 +115,16 @@ const News = ({ params }) => {
         <div key={i} className="flex justify-center">
           <Card
             sx={{ maxWidth: 345 }}
-            className="border-2 border-gray-600 bg-stone-800 text-lg font-semibold text-white shadow-lg"
+            className="h-full w-full border-2 border-gray-600 bg-stone-800 text-lg font-semibold shadow-lg"
           >
             <CardActionArea
+              className="h-full w-full"
               onClick={() => {
                 window.open(url, "_blank");
               }}
             >
               <CardMedia component="img" image={thumbnail} alt="youtubeVideo" />
-              <CardContent className="flex flex-col justify-center">
+              <CardContent className="flex h-36 w-full flex-col justify-center bg-stone-800 text-white">
                 <p>{title}</p>
                 <hr />
                 <p>Published at {formatDateTime(publishedDateTime)}</p>
@@ -142,7 +153,7 @@ const News = ({ params }) => {
           <h1 className="my-5 text-center text-3xl font-semibold text-white">
             Related YouTube Videos
           </h1>
-          <div className="mb-5 grid grid-cols-3 gap-2 overflow-y-scroll">
+          <div className="mb-5 flex justify-center text-center text-xl font-semibold text-white">
             <h1>Nothing Matched</h1>
           </div>
         </div>

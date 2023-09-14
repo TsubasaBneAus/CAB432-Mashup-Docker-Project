@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 
 const Header = (props) => {
   const [pageCountData, setPageCountData] = useState(0);
+  const errorNumOfVisits = -1;
 
   // Display links in the header
   const displayLinks = () => {
@@ -26,17 +27,37 @@ const Header = (props) => {
     try {
       const res = await fetch("http://localhost:5000/getNumberOfVisits");
       const data = await res.json();
-      console.log(data);
       setPageCountData(data.pageCount);
       sessionStorage.setItem("pageCount", data.pageCount);
     } catch (err) {
       console.log(err);
+      setPageCountData(errorNumOfVisits);
+      sessionStorage.setItem("pageCount", errorNumOfVisits);
     }
   };
 
+  // Display total number of visitors of the web application
+  const displayNumberOfVisits = () => {
+    if (pageCountData == errorNumOfVisits) {
+      return (
+        <p className="text-xl text-white ml-5">
+          Failed to fetch the total number of visits
+        </p>
+      )
+    } else {
+      return (
+        <p className="text-xl text-white ml-5">
+          Total number of visits: {pageCountData}
+        </p>
+      )
+    }
+  }
+
   useEffect(() => {
+    // Check if the value for the number of the visitors is already stored in the session storage
+    // or its value is -1, which means an error
     const pageCountStorage = sessionStorage.getItem("pageCount");
-    if (!pageCountStorage) {
+    if (!pageCountStorage || pageCountStorage == errorNumOfVisits) {
       fetchNumberOfVisits();
     } else {
       setPageCountData(pageCountStorage);
@@ -53,9 +74,7 @@ const Header = (props) => {
       </button>
       <div className="flex">
         {displayLinks()}
-        <p className="text-xl text-white ml-5">
-          Total number of visits: {pageCountData}
-        </p>
+        {displayNumberOfVisits()}
       </div>
     </header>
   );
