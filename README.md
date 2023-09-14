@@ -31,7 +31,7 @@ docker exec -it cab432-mashup-docker-project-backend-dev bash
 ### For the production environment
 
 ```bash
-docker exec -it cab432-mashup-docker-project-backend-prod bash
+docker exec -it cab432-mashup-docker-project-backend-prod sh
 ```
 
 ## 2.2 Implement database migration using Prisma (ORM)
@@ -40,13 +40,7 @@ docker exec -it cab432-mashup-docker-project-backend-prod bash
 npx prisma migrate dev
 ```
 
-## 2.3 Generate Prisma Client
-
-```bash
-npx prisma generate
-```
-
-## 2.4 Exit from the MySQL container
+## 2.3 Exit from the MySQL container
 
 ```bash
 exit
