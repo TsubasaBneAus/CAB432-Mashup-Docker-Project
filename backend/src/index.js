@@ -59,9 +59,9 @@ app.get("/getNumberOfVisits", async (req, res) => {
   }
 });
 
-app.post("/getDataWithCoords", async (req, res) => {
+app.post("/getDataAtFirst", async (req, res) => {
   try {
-    // Fetch the current weather and forecast
+    // Fetch the current weather and forecast in Brisbane
     const latitude = req.body.latitude;
     const longitude = req.body.longitude;
     const currentWeatherRes = await fetch(

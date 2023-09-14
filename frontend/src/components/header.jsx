@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 
 const Header = (props) => {
+  const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const [pageCountData, setPageCountData] = useState(0);
   const errorNumOfVisits = -1;
 
@@ -25,7 +26,7 @@ const Header = (props) => {
   const fetchNumberOfVisits = async () => {
     // Send a POST request to the API server
     try {
-      const res = await fetch("http://localhost:8000/getNumberOfVisits");
+      const res = await fetch(`${baseUrl}/getNumberOfVisits`);
       const data = await res.json();
       setPageCountData(data.pageCount);
       sessionStorage.setItem("pageCount", data.pageCount);

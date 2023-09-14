@@ -11,6 +11,7 @@ import Footer from "@/components/footer";
 import { useEffect, useState } from "react";
 
 const News = ({ params }) => {
+  const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const [newsData, setNewsData] = useState({
     author: null,
     content: null,
@@ -27,7 +28,7 @@ const News = ({ params }) => {
   // Fetch YouTube videos related to the news
   const fetchYouTubeVideos = async (rawNewsData) => {
     try {
-      const res = await fetch("http://localhost:5000/getYouTubeVideos", {
+      const res = await fetch(`${baseUrl}/getYouTubeVideos`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
