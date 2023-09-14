@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 const Home = () => {
-  const BACKEND_API_URL = process.env.BACKEND_API_URL;
+  const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const [currentData, setCurrentData] = useState({
     city: null,
     weather: [],
@@ -37,7 +37,7 @@ const Home = () => {
     // Send a POST request to the API server
     navigator.geolocation.getCurrentPosition(async (position) => {
       try {
-        const res = await fetch(`${BACKEND_API_URL}/getDataWithCoords`, {
+        const res = await fetch(`${baseUrl}/getDataWithCoords`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -66,7 +66,7 @@ const Home = () => {
 
     // Send a POST request to the API server
     try {
-      const res = await fetch(`${BACKEND_API_URL}/getDataWithCityName`, {
+      const res = await fetch(`${baseUrl}/getDataWithCityName`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -226,6 +226,7 @@ const Home = () => {
 
   useEffect(() => {
     fetchDataWithCoords();
+    console.log(baseUrl);
   }, []);
 
   // Check if the page is loading
