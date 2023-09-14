@@ -12,9 +12,9 @@ RUN npm install
 COPY . .
 
 # Generate ".env.local" file
-ARG NEXT_PUBLIC_BACKEND_URL
-RUN touch .env.local
-RUN echo "NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL" >> .env.local
+# ARG NEXT_PUBLIC_BACKEND_URL
+# RUN touch .env.production
+# RUN echo "NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL" >> .env.production
 
 # Start a development server
 CMD [ "npm", "run", "dev" ]
