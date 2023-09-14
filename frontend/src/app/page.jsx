@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 const Home = () => {
+  const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const [currentData, setCurrentData] = useState({
     city: null,
     weather: [],
@@ -25,8 +26,8 @@ const Home = () => {
   };
   const router = useRouter();
 
-  // Fetch the current data on weather and news based on the user's location
-  const fetchDataWithCoords = () => {
+  // Fetch the current data on weather and news in Brisbane initially
+  const fetchDataAtFirst = async () => {
     // Set null to "city" to implement a loading page at first
     setCurrentData({
       city: null,
@@ -34,25 +35,23 @@ const Home = () => {
     });
 
     // Send a POST request to the API server
-    navigator.geolocation.getCurrentPosition(async (position) => {
-      try {
-        const res = await fetch("http://localhost:8000/getDataWithCoords", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-          }),
-        });
-        const data = await res.json();
-        setCurrentData(data);
-      } catch (err) {
-        console.log(err);
-        setCurrentData(errorCurrentData);
-      }
-    });
+    try {
+      const res = await fetch(`${baseUrl}/getDataAtFirst`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          latitude: -27.470125,
+          longitude: 153.021072,
+        }),
+      });
+      const data = await res.json();
+      setCurrentData(data);
+    } catch (err) {
+      console.log(err);
+      setCurrentData(errorCurrentData);
+    }
   };
 
   // Fetch the current data on weather and news based on the city a user entered
@@ -65,7 +64,7 @@ const Home = () => {
 
     // Send a POST request to the API server
     try {
-      const res = await fetch("http://localhost:8000/getDataWithCityName", {
+      const res = await fetch(`${baseUrl}/getDataWithCityName`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -224,7 +223,7 @@ const Home = () => {
   };
 
   useEffect(() => {
-    fetchDataWithCoords();
+    fetchDataAtFirst();
     console.log(baseUrl);
   }, []);
 
