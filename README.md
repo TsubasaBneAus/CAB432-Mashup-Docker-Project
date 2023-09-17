@@ -9,12 +9,12 @@
 ### After filling out the strings, please remove those braces
 
 ```bash
-DATABASE_URL="mysql://root:{MySQL Database Root Password}@db:3306/cab432-mashup-docker-project"
+DATABASE_URL="mysql://root:{MySQL Database Root Password}@db:3306/{The name of the database used for the app}"
 WEATHER_API_KEY="{Weather API key}"
 NEWS_API_KEY="{News API Key}"
 YOUTUBE_API_KEY="{YouTube Data API Key}"
 MYSQL_ROOT_PASSWORD="{MySQL Database Root Password}"
-MYSQL_DATABASE="cab432-mashup-docker-project"
+MYSQL_DATABASE="{The name of the database used for the app}"
 
 # In the development environment
 # NEXT_PUBLIC_BACKEND_URL="http://localhost:5000"
