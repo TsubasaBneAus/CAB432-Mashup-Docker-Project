@@ -39,7 +39,7 @@ docker-compose -f docker-compose.prod.yml up --build -d
 
 ## 3. Setup the database
 
-### * If you have not created a table of the MySQL database in the container, execute the following steps to implement database migration, otherwise skip these steps
+### * If you create the MySQL database in the container for the first time, execute the following steps to implement database migration, otherwise skip these steps
 
 ## 3.1 Enter the Backend container
 
